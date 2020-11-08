@@ -3,8 +3,9 @@
 # Project installation
 1. git clone
 2. git branch dev/{new-branch-name} (ex. git branch dev/login-page)
-3. npm install
-4. npm start
+3. git checkout {new-branch-name}
+4. npm install
+5. npm start
   
 # Feature commit
 1. git checkout {your-branch-name}
