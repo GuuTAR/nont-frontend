@@ -6,7 +6,6 @@ function App() {
   return (
     <div>
       <React_test />
-      555
     </div>
   )
 }
