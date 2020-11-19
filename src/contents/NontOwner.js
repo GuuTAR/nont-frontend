@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Searchfilter from '../components/Searchfilter'
-import Searchinfo from '../components/Searchinfo'
+import Searchinfo from '../components/searchinfo'
 import Logo from '../components/Logo'
 import Navbar_logout from '../components/Navbar_logout'
 

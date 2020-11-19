@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Modal from 'react-modal'
 import Background from '../bg/white.png'
-import SearchInfo from '../components/Searchinfo.js'
+import SearchInfo from '../components/searchinfo'
 import { Post } from '../server.js'
 
 function StarRating({ count, value,

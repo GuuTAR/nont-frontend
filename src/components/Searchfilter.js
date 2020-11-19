@@ -5,11 +5,11 @@ import DatePicker from "react-datepicker";
 import { makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 
-import Showpetinfo from './Showpetinfo'
+import Showpetinfo from './showpetinfo'
 import { FormGroup } from '@material-ui/core';
 
-import ShowMaxprice from './Showmaxpriceinfo'
-import ShowMinprice from './Showminpriceinfo'
+import ShowMaxprice from './showmaxpriceinfo'
+import ShowMinprice from './showminpriceinfo'
 
 import { Link } from 'react-router-dom'
 
@@ -17,7 +17,7 @@ import { Get, Post } from '../server.js'
 
 import ShelterList from './ShelterList'
 import ShelterItem from './ShelterItem';
-import SearchInfo from './Searchinfo'
+import SearchInfo from './searchinfo'
 
 
 function Searchfilter(props) {

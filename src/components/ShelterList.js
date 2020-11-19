@@ -6,7 +6,7 @@ const rawData = [
     {
         id: 1,
         petname: "Cat",
-        picture: 'media/place1-1.jpg',
+        picture: '../IMG_2481.jpg',
         roomName: "Room_A",
         shelterName: "Shelter_Raksud",
         price: "60$",
@@ -18,7 +18,7 @@ const rawData = [
     {
         id: 2,
         petname: "Dog",
-        picture: 'media/place1-2.jpg',
+        picture: '../logo.svg',
         roomName: "Room_A",
         shelterName: "Shelter_Raksud",
         price: "60$",
@@ -43,8 +43,7 @@ const ShelterList = (props) => {
 
     return (
         <div>
-            { props.RoomsList.length!==0 && props.RoomsList.map(renderShelter) }
-            {console.log(33)}
+            { rawData.map(renderShelter) }
         </div>
     )
 }
