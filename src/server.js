@@ -42,5 +42,3 @@ export async function Delect(api)  {
         )
     return res.data
 }
-
-
