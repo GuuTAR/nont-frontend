@@ -36,7 +36,7 @@ function StarRating({ count, value,
 
 const ShelterItem = (props) => {
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [showSearchInfo, setShowSearchInfo] = useState({})
+    const [showSearchInfo, setShowSearchInfo] = useState('')
 
     const [data_reservation, setDataReservation] = useState({});
     const [showreservation, setShowReservation] = useState(false)
@@ -47,10 +47,8 @@ const ShelterItem = (props) => {
     const [checkInDate, setCheckInDate] = useState('')
     const [checkOudDate, setCheckOutDate] = useState('')
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        //Find find room data which have room_id === e
-        // setShowSearchInfo(a_room)
+    const handleSubmit = (room_id) => {
+        props.handleClick(room_id)
     }
 
     const handleSubmitReserve = (e) => {
@@ -159,10 +157,9 @@ const ShelterItem = (props) => {
                     </div>
                 </div>
             </div>
-            <div>
-                {/* {showSearchInfo!=={} && <SearchInfo RoomsList={showSearchInfo} />} */}
-                {showSearchInfo!=={} && <SearchInfo RoomsList={tmp} />}
-            </div>
+            {/* <div>
+                {showSearchInfo!=='' && <SearchInfo RoomsList={tmp} />}
+            </div> */}
         </div>
     );
 }

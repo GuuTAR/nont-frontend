@@ -54,19 +54,10 @@ function Searchfilter(props) {
     const [payload_rooms, setPayloadRooms] = useState({})
 
     //ของจริง
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const result_pets = await Get("api/pets/?user_id="+props.userinfo.user_id).then((d) => {
-    //             setDataPets(d.pets)
-    //             setPetname(d.pets[0].pet_name)
-    //         })
-    //     }
-    //     fetchData()
-    // }, [])
-
     useEffect(() => {
         const fetchData = async () => {
-            const result_pets = await Get("api/pets/").then((d) => {
+            // const result_pets = await Get("api/pets/?user_id="+props.userinfo.id).then((d) => {
+            const result_pets = await Get("api/pets/?user_id=2").then((d) => {
                 setDataPets(d.pets)
                 setPetname(d.pets[0].pet_name)
             })
@@ -74,11 +65,21 @@ function Searchfilter(props) {
         fetchData()
     }, [])
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const result_pets = await Get("api/pets/").then((d) => {
+    //             setDataPets(d.pets)
+    //             setPetname(d.pets[0].pet_name)
+    //         })
+    //     }
+    //     fetchData()
+    // }, [])
+
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [petname, setPetname] = useState('');
     const [pettype, setPettype] = useState('');
-    const [petmed, setPetmed] = useState('');
+    const [petid, setPetid] = useState(1);
     const [meals, setMeals] = useState(false);
     const [aircon, setAircon] = useState(false);
     const [pool, setPool] = useState(false);
@@ -88,6 +89,20 @@ function Searchfilter(props) {
     const [tier, setRadioValue] = useState(1);
     const [showshelterlist, setShowshelterlist] = useState(false)
     const [showshelterinfo, setShowshelterinfo] = useState(false)
+    
+    const [roomData, setRoomData] = useState({})
+
+    // const selectRoom = (event, roomId) => {
+    //     // Find room that have room id = roomId abd return
+    //     console.log(roomId + "Addd")
+    // }
+
+    const selectRoom = (room_id) => {
+        // Find room that have room id = roomId abd return
+        setRoomData(data_rooms.filter((room)=> {
+            return room.room_id === room_id
+        })[0])
+    }
 
     const handlePriceChange = (event, newSlidePrice) => {
         setSlidePrice(newSlidePrice)
@@ -110,13 +125,6 @@ function Searchfilter(props) {
         setWalking(!walking)
     }
 
-    // const printconsole = () => {
-    //     console.log(meals)
-    //     console.log(aircon)
-    //     console.log(pool)
-    //     console.log(walking)
-    //     console.log(tier)
-    // }
     const renderpetname = (pet) => {
         return (
             <option>
@@ -127,6 +135,13 @@ function Searchfilter(props) {
 
     const changetype_medcer = (eachnont) => {
         return eachnont.pet_name === petname
+    }
+
+    const handlePetChange = (petname) => {
+        setPetname(petname)
+        setPetid(data_pets.filter((eachnont) => {
+            return eachnont.pet_name===petname
+        })[0].petid)
     }
 
     const handleSubmit = (e) => {
@@ -141,12 +156,14 @@ function Searchfilter(props) {
         payload.has_pool = pool
         payload.walking = walking
         payload.pet_type = pettype
+        payload.pet_id = petid
         // setPayloadRooms(payload)
         e.preventDefault()
         const fetchData = async () => {
             const result_rooms = await Post("api/search-rooms/",payload).then((d) => {
                 // console.log(d)
                 setDataRooms(d.rooms)
+                setRoomData(d.rooms[0])
             })
         }
         fetchData()
@@ -165,11 +182,12 @@ function Searchfilter(props) {
                     <Form.Label style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", fontWeight: "bold" }}>
                         Select pet
                     </Form.Label>
-                    <Form.Control value={petname} onChange={(e) => { setPetname(e.target.value) }} as="select" size="sm" style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", borderRadius: "50px", borderColor: "white" }}>
+                    <Form.Control value={petname} onChange={(e) => { handlePetChange(e) }} as="select" size="sm" style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", borderRadius: "50px", borderColor: "white" }}>
                         {/* {rawData.map(renderpetname)} */}
                         {data_pets.map(renderpetname)}
                     </Form.Control>
-                    <Showpetinfo nontinfoList={data_pets.filter(changetype_medcer)} />
+                    <Showpetinfo nontinfoList={data_pets.filter(changetype_medcer) } />
+                    {/* {data_pets.filter(handletype)} */}
                 </Form>
 
                 <Form.Group controlId="select-checkin-checkout-dates">
@@ -246,9 +264,9 @@ function Searchfilter(props) {
             </Form>
             </div>
             <div>
-                { showshelterlist && <ShelterList RoomsList={data_rooms} />}
-                { showshelterlist && <SearchInfo RoomsList={data_rooms[0]} />}
-                {console.log(data_rooms[0])}
+                {/* { showshelterlist && <ShelterList RoomsList={data_rooms} handleClick={selectRoom} nontID={petid} nontownerID={props.userinfo.id}/>} */}
+                { showshelterlist && <ShelterList RoomsList={data_rooms} handleClick={selectRoom} />}
+                { showshelterlist && typeof(roomData.room_name)!=='undefined' && <SearchInfo RoomsList={roomData} />}
             </div>
         </div>
     );

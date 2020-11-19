@@ -35,7 +35,7 @@ const ShelterList = (props) => {
     const renderShelter = (shelter, index) => {
         return (
             <div>
-                <ShelterItem shelter = {shelter}/>
+                <ShelterItem shelter = {shelter} handleClick={props.handleClick}/>
                 {/* {console.log({shelter})} */}
             </div>
         )
