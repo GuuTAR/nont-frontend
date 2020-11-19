@@ -1,18 +1,15 @@
 import React, {useState, useEffect} from 'react'
-import logo from '../logo.svg';
 
 import { Button } from 'react-bootstrap'
 
 const React_test = () => {
 
-    const [hasError, setErrors] = useState(false)
     const [users, setUsers] = useState({})
 
     async function fetchData() {
         const res = await fetch('https://randomuser.me/api/')
         res.json()
             .then(res => setUsers(res))
-            .catch(err => setErrors(err))
     }
 
     useEffect(() => {

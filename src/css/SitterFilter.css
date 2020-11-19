@@ -1,0 +1,20 @@
+.react-datepicker__input-container input {
+    width: 100%;
+    border-radius: 20px;
+    border-color: white;
+    color: #2699FB;
+    text-indent: 20px;
+    height: 0%;
+}
+.react-datepicker__input-container {
+    width: 80%;
+
+}
+
+.react-datepicker-wrapper {
+    display: inline;
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--disabled {
+    color: #2699FB;
+}
