@@ -11,7 +11,7 @@ function Navbar_logout() {
                 <Button variant="light" style={
                     {backgroundImage: `url(${Background})`,
                     fontWeight: "bold",
-                    color: "blue",
+                    color: "#1560bd",
                     borderRadius: "10px"}}>
                     Logout
                 </Button>

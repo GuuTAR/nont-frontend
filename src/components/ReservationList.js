@@ -7,7 +7,7 @@ const ReservationList = (props) => {
 
     const renderReservation = (reserve, index) => {
         return (
-            <ReserveItem key={index} reserve ={reserve} index={index}/>
+            <ReserveItem key={index} reserve ={reserve} index={index} reRender={props.reRender}/>
         )
     }
 

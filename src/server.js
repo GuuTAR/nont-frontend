@@ -34,13 +34,24 @@ export async function Put(api, payload)  {
     return res.data
 }
 
-export async function Delect(api)  {
+export async function Delete(api)  {
     const res = await axios
-        .delete(api)
+        .delete(url+api)
         .catch(
             e => console.error(e)
         )
     return res.data
 }
+
+export async function Patch(api, payload)  {
+    const res = await axios
+        .patch(url+api, payload)
+        .catch(
+            e => console.error(e)
+        )
+    return res.data
+}
+
+
 
 

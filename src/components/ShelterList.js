@@ -2,48 +2,19 @@ import React from 'react'
 
 import ShelterItem from './ShelterItem'
 
-const rawData = [
-    {
-        id: 1,
-        petname: "Cat",
-        picture: '../IMG_2481.jpg',
-        roomName: "Room_A",
-        shelterName: "Shelter_Raksud",
-        price: "60$",
-        available: "12",
-        rating: "4",
-        checkindate: "13/06/2021",
-        checkoutdate: "14/06/2021"
-    },
-    {
-        id: 2,
-        petname: "Dog",
-        picture: '../logo.svg',
-        roomName: "Room_A",
-        shelterName: "Shelter_Raksud",
-        price: "60$",
-        available: "1",
-        rating: "3",
-        checkindate: "17/06/2021",
-        checkoutdate: "18/06/2021"
-    }
-
-]
-
 const ShelterList = (props) => {
 
     const renderShelter = (shelter, index) => {
         return (
             <div>
-                <ShelterItem shelter = {shelter}/>
-                {/* {console.log({shelter})} */}
+                <ShelterItem shelter = {shelter} handleClick={props.handleClick} nont_id={props.nont_id} user_id={props.user_id} check_in_date={props.check_in_date} check_out_date={props.check_out_date} reRender={props.reRender}/>
             </div>
         )
     }
 
     return (
         <div>
-            { rawData.map(renderShelter) }
+            { props.RoomsList.length!==0 && props.RoomsList.map(renderShelter) }
         </div>
     )
 }

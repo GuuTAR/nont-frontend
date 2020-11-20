@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import Modal from 'react-modal'
 import Background from '../bg/white.png'
-import SearchInfo from '../components/searchinfo'
+import SearchInfo from '../components/Searchinfo.js'
 import { Post } from '../server.js'
 
 function StarRating({ count, value,
@@ -34,39 +34,83 @@ function StarRating({ count, value,
     )
 }
 
+const dateToString = (date) => {
+
+    const dateList = date.toString().split(" ")
+    let day = dateList[2]
+    let month = ""
+    switch(dateList[1]) {
+        case "Jan" :
+            month = "01"
+            break
+        case "Feb" :
+            month = "02"
+            break
+        case "Mar" :
+            month = "03"
+            break
+        case "Apr" :
+            month = "04"
+            break
+        case "May":
+            month = "05"
+            break
+        case "Jun":
+            month = "06"
+            break
+        case "Jul":
+            month = "07"
+            break
+        case "Aug":
+            month = "08"
+            break
+        case "Sep":
+            month = "09"
+            break
+        case "Oct":
+            month = "10"
+            break
+        case "Nov":
+            month = "11"
+            break
+        case "Dec":
+            month = "12"
+            break
+        default :
+            month = "01"
+            break
+    }
+    let year = dateList[3]
+    return day+"-"+month+"-"+year
+}
+
 const ShelterItem = (props) => {
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [showSearchInfo, setShowSearchInfo] = useState({})
+    const [showSearchInfo, setShowSearchInfo] = useState('')
 
     const [data_reservation, setDataReservation] = useState({});
     const [showreservation, setShowReservation] = useState(false)
     const [nontOwnerID, setnontOwnerID] = useState('')
     const [nontID, setnontID] = useState('')
-    const [roomID, setroomID] = useState('')
-    const [fee, setfee] = useState('')
     const [checkInDate, setCheckInDate] = useState('')
     const [checkOudDate, setCheckOutDate] = useState('')
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        //Find find room data which have room_id === e
-        // setShowSearchInfo(a_room)
+    const handleSubmit = (room_id) => {
+        props.handleClick(room_id)
     }
 
     const handleSubmitReserve = (e) => {
         let payload = {}
-        payload.nont_owner_id = nontOwnerID
-        payload.nont_id = nontID
-        payload.room_id = roomID
-        payload.fee = fee
-        payload.check_in_date = checkInDate
-        payload.check_out_date = checkOudDate
-        // setPayloadRooms(payload)
+        payload.nont_owner_id = props.user_id
+        payload.nont_id = props.nont_id
+        payload.room_id = props.shelter.room_id
+        payload.check_in_date = dateToString(props.check_in_date)
+        payload.check_out_date = dateToString(props.check_out_date)
         e.preventDefault()
         const fetchData = async () => {
             const result_rooms = await Post("api/reservations/", payload).then((d) => {
-                // console.log(d)
-                setDataReservation(d.reservation)
+                setDataReservation(d)
+                props.reRender()
             })
         }
         fetchData()
@@ -142,12 +186,11 @@ const ShelterItem = (props) => {
                                         }
                                     }>
                                     <h2>Reservation success!</h2>
-                                    <p>Reservation ID : {data_reservation!==undefined && data_reservation.reservation_id}</p>
-                                    <p>Pet name : {data_reservation!==undefined && data_reservation.pet_name}</p>
-                                    <p>Shelter : {data_reservation!==undefined && data_reservation.shelter_name}</p>
-                                    <p>Room : {data_reservation!==undefined && data_reservation.room_name}</p>
-                                    <p>Check in date : {data_reservation!==undefined && data_reservation.check_in_date}</p>
-                                    <p>Check out date : {data_reservation!==undefined && data_reservation.check_out_date}</p>
+                                    <p>Reservation ID : {typeof(data_reservation!=='undefined') && data_reservation.reservation_id}</p>
+                                    <p>Pet name : {typeof(data_reservation)!=='undefined' && data_reservation.pet_name}</p>
+                                    <p>Shelter : {typeof(data_reservation)!=='undefined' && data_reservation.shelter_name}</p>
+                                    <p>Check in date : {typeof(data_reservation)!=='undefined' && data_reservation.check_in_date}</p>
+                                    <p>Check out date : {typeof(data_reservation)!=='undefined' && data_reservation.check_out_date}</p>
                                     <div>
                                         <Button svariant="primary" type="submit" onClick={() => setModalIsOpen(false)}>
                                             Close
@@ -159,10 +202,9 @@ const ShelterItem = (props) => {
                     </div>
                 </div>
             </div>
-            <div>
-                {/* {showSearchInfo!=={} && <SearchInfo RoomsList={showSearchInfo} />} */}
-                {showSearchInfo!=={} && <SearchInfo RoomsList={tmp} />}
-            </div>
+            {/* <div>
+                {showSearchInfo!=='' && <SearchInfo RoomsList={tmp} />}
+            </div> */}
         </div>
     );
 }

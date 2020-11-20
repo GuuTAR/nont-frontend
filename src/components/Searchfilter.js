@@ -5,11 +5,11 @@ import DatePicker from "react-datepicker";
 import { makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 
-import Showpetinfo from './showpetinfo'
+import Showpetinfo from './Showpetinfo'
 import { FormGroup } from '@material-ui/core';
 
-import ShowMaxprice from './showmaxpriceinfo'
-import ShowMinprice from './showminpriceinfo'
+import ShowMaxprice from './Showmaxpriceinfo'
+import ShowMinprice from './Showminpriceinfo'
 
 import { Link } from 'react-router-dom'
 
@@ -17,33 +17,10 @@ import { Get, Post } from '../server.js'
 
 import ShelterList from './ShelterList'
 import ShelterItem from './ShelterItem';
-import SearchInfo from './searchinfo'
+import SearchInfo from './Searchinfo'
 
 
 function Searchfilter(props) {
-    const rawData = [
-        {
-            name: "Lucky",
-            type: "Cat",
-            medcer: true
-        },
-        {
-            name: "Kuma",
-            type: "Cat",
-            medcer: true
-        },
-        {
-            name: "Sarang",
-            type: "Dog",
-            medcer: false
-        },
-        {
-            name: "Kuro",
-            type: "Cat",
-            medcer: false
-        }
-    ]
-
     const radios = [
         { name: 'Gold', value: 1 },
         { name: 'Silver', value: 2 },
@@ -53,20 +30,10 @@ function Searchfilter(props) {
     const [data_pets, setDataPets] = useState([]);
     const [payload_rooms, setPayloadRooms] = useState({})
 
-    //ของจริง
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const result_pets = await Get("api/pets/?user_id="+props.userinfo.user_id).then((d) => {
-    //             setDataPets(d.pets)
-    //             setPetname(d.pets[0].pet_name)
-    //         })
-    //     }
-    //     fetchData()
-    // }, [])
-
     useEffect(() => {
         const fetchData = async () => {
-            const result_pets = await Get("api/pets/").then((d) => {
+            const result_pets = await Get("api/pets/?user_id="+props.user_id).then((d) => {
+            // const result_pets = await Get("api/pets/?user_id=2").then((d) => {
                 setDataPets(d.pets)
                 setPetname(d.pets[0].pet_name)
             })
@@ -74,20 +41,84 @@ function Searchfilter(props) {
         fetchData()
     }, [])
 
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [petname, setPetname] = useState('');
     const [pettype, setPettype] = useState('');
-    const [petmed, setPetmed] = useState('');
+    const [petid, setPetid] = useState(1);
     const [meals, setMeals] = useState(false);
     const [aircon, setAircon] = useState(false);
     const [pool, setPool] = useState(false);
     const [walking, setWalking] = useState(false);
-    const [realPrice, setRealPrice] = useState([2000, 5000]);
+    const [realPrice, setRealPrice] = useState([1000, 5000]);
     const [slidePrice, setSlidePrice] = useState([20, 50]);
     const [tier, setRadioValue] = useState(1);
     const [showshelterlist, setShowshelterlist] = useState(false)
     const [showshelterinfo, setShowshelterinfo] = useState(false)
+    
+    const [roomData, setRoomData] = useState(undefined)
+
+    const dateToString = (date) => {
+
+        const dateList = date.toString().split(" ")
+        let day = dateList[2]
+        let month = ""
+        switch(dateList[1]) {
+            case "Jan" :
+                month = "01"
+                break
+            case "Feb" :
+                month = "02"
+                break
+            case "Mar" :
+                month = "03"
+                break
+            case "Apr" :
+                month = "04"
+                break
+            case "May":
+                month = "05"
+                break
+            case "Jun":
+                month = "06"
+                break
+            case "Jul":
+                month = "07"
+                break
+            case "Aug":
+                month = "08"
+                break
+            case "Sep":
+                month = "09"
+                break
+            case "Oct":
+                month = "10"
+                break
+            case "Nov":
+                month = "11"
+                break
+            case "Dec":
+                month = "12"
+                break
+            default :
+                month = "01"
+                break
+        }
+        let year = dateList[3]
+        return day+"-"+month+"-"+year
+    }
+
+    // const selectRoom = (event, roomId) => {
+    //     // Find room that have room id = roomId abd return
+    //     console.log(roomId + "Addd")
+    // }
+
+    const selectRoom = (room_id) => {
+        // Find room that have room id = roomId abd return
+        setRoomData(data_rooms.filter((room)=> {
+            return room.room_id === room_id
+        })[0])
+    }
 
     const handlePriceChange = (event, newSlidePrice) => {
         setSlidePrice(newSlidePrice)
@@ -110,13 +141,6 @@ function Searchfilter(props) {
         setWalking(!walking)
     }
 
-    // const printconsole = () => {
-    //     console.log(meals)
-    //     console.log(aircon)
-    //     console.log(pool)
-    //     console.log(walking)
-    //     console.log(tier)
-    // }
     const renderpetname = (pet) => {
         return (
             <option>
@@ -129,27 +153,56 @@ function Searchfilter(props) {
         return eachnont.pet_name === petname
     }
 
-    const handleSubmit = (e) => {
+    const handlePetChange = (petname) => {
+        setPetname(petname)
+        setPetid(data_pets.filter((eachnont) => {
+            console.log(eachnont)
+            console.log(petname)
+            return eachnont.pet_name===petname
+        })[0].pet_id)
+    }
+
+    const fetchRoomData = async (payload) => {
+        const result_rooms = await Post("api/search-rooms/",payload).then((d) => {
+            console.log(d)
+            if (d.rooms.length!==0){
+                setDataRooms(d.rooms)
+                setRoomData(d.rooms[0])
+            }
+        })
+    }
+    const reRender = () => {
         let payload = {}
-        payload.check_in_date = startDate
-        payload.check_out_date = endDate
+        payload.check_in_date = dateToString(startDate)
+        payload.check_out_date = dateToString(endDate)
         payload.min_price = realPrice[0]
         payload.max_price = realPrice[1]
         payload.tier = tier
-        payload.has_meals = meals
-        payload.has_air_con = aircon
-        payload.has_pool = pool
-        payload.walking = walking
-        payload.pet_type = pettype
+        payload.had_meals = (meals? 1:0)
+        payload.had_air_con = (aircon? 1:0)
+        payload.had_pool = (pool? 1:0)
+        payload.had_walking = (walking? 1:0)
+        payload.pet_id = petid
+        fetchRoomData(payload)
+        setShowshelterlist(true)
+        setShowshelterinfo(true)
+    }
+
+    const handleSubmit = (e) => {
+        let payload = {}
+        payload.check_in_date = dateToString(startDate)
+        payload.check_out_date = dateToString(endDate)
+        payload.min_price = realPrice[0]
+        payload.max_price = realPrice[1]
+        payload.tier = tier
+        payload.had_meals = (meals? 1:0)
+        payload.had_air_con = (aircon? 1:0)
+        payload.had_pool = (pool? 1:0)
+        payload.had_walking = (walking? 1:0)
+        payload.pet_id = petid
         // setPayloadRooms(payload)
         e.preventDefault()
-        const fetchData = async () => {
-            const result_rooms = await Post("api/search-rooms/",payload).then((d) => {
-                // console.log(d)
-                setDataRooms(d.rooms)
-            })
-        }
-        fetchData()
+        fetchRoomData(payload)
         setShowshelterlist(true)
         setShowshelterinfo(true)
     }
@@ -165,11 +218,12 @@ function Searchfilter(props) {
                     <Form.Label style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", fontWeight: "bold" }}>
                         Select pet
                     </Form.Label>
-                    <Form.Control value={petname} onChange={(e) => { setPetname(e.target.value) }} as="select" size="sm" style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", borderRadius: "50px", borderColor: "white" }}>
+                    <Form.Control value={petname} onChange={(e) => { handlePetChange(e.target.value) }} as="select" size="sm" style={{ color: "#2799FB", marginLeft: "30px", marginTop: "10px", borderRadius: "50px", borderColor: "white" }}>
                         {/* {rawData.map(renderpetname)} */}
                         {data_pets.map(renderpetname)}
                     </Form.Control>
-                    <Showpetinfo nontinfoList={data_pets.filter(changetype_medcer)} />
+                    <Showpetinfo nontinfoList={data_pets.filter(changetype_medcer) } />
+                    {/* {data_pets.filter(handletype)} */}
                 </Form>
 
                 <Form.Group controlId="select-checkin-checkout-dates">
@@ -178,8 +232,8 @@ function Searchfilter(props) {
                     </Form.Label>
                     <Form inline style={{ marginLeft: "5px" }}>
                         {/*ใส่รูป*/}
-                        <DatePicker selected={startDate} onChange={date => setStartDate(date)} isClearable placeholderText="XX/XX/XXXX" dateFormat="dd/MM/yyyy" />
-                        <DatePicker selected={endDate} onChange={date => setEndDate(date)} isClearable placeholderText="XX/XX/XXXX" dateFormat="dd/MM/yyyy" />
+                        <DatePicker closeOnScroll={true} selectsStart startDate={startDate} endDate={endDate} selected={startDate} onChange={date => setStartDate(date)} isClearable placeholderText="XX/XX/XXXX" dateFormat="dd/MM/yyyy" />
+                        <DatePicker closeOnScroll={true} selectsEnd startDate={startDate} endDate={endDate} minDate={startDate} selected={endDate} onChange={date => setEndDate(date)} isClearable placeholderText="XX/XX/XXXX" dateFormat="dd/MM/yyyy" />
                     </Form>
                 </Form.Group>
 
@@ -237,18 +291,17 @@ function Searchfilter(props) {
                     </ButtonGroup>
                 </Form.Group>
 
-
-                {/* <Link to="/Navbar_logout"> */}
-                <Button variant="primary" type="submit" size="lg" style={{ fontWeight: "bold", marginLeft: "20px" }} onClick={(e) => { handleSubmit(e) }}>
-                    Submit filter
-                </Button>
-                {/* </Link> */}
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <Button variant="primary" type="submit" size="lg" style={{ fontWeight: "bold",display: "flex", justifyContent: "center", alignItems: "center"}} onClick={(e) => { handleSubmit(e) }}>
+                        Submit filter
+                    </Button>
+                </div>
             </Form>
             </div>
             <div>
-                { showshelterlist && <ShelterList RoomsList={data_rooms} />}
-                { showshelterlist && <SearchInfo RoomsList={data_rooms[0]} />}
-                {console.log(data_rooms[0])}
+                { showshelterlist && <ShelterList RoomsList={data_rooms} handleClick={selectRoom} nont_id={petid} user_id={props.user_id} check_in_date={startDate} check_out_date={endDate} reRender={reRender}/>}
+                {/* { showshelterlist && typeof(roomData.room_name)!=='undefined' && <SearchInfo RoomsList={roomData} />} */}
+                { showshelterlist && typeof(roomData)!=='undefined' && <SearchInfo RoomsList={roomData} />}
             </div>
         </div>
     );

@@ -16,8 +16,8 @@ function App() {
       <div>
         <Route exact path="/" component={Login} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/Navbar_logout" component={Navbar_logout} />
-        <Route exact path="/Logo" component={Logo} />
+        <Route exact path="/nontOwner/:user_id" component={NontOwner} />
+        <Route exact path="/nontSitter/:user_id" component={NontSitter} />
       </div>
     </Router>
     

@@ -3,7 +3,7 @@ export const searchFilter = (data, reserveID, owner, status, startDate, endDate)
     if (reserveID !== "")
         filterData = filterData.filter((reserve) => {
             return (
-                reserve.reservation_id.toString() === reserveID.toString()
+                reserve.reservation_id.toString().toLowerCase().indexOf(reserveID.toString().toLowerCase()) === 0
             )
         })
     if (owner !== "")
@@ -21,18 +21,18 @@ export const searchFilter = (data, reserveID, owner, status, startDate, endDate)
         filterData = filterData.filter((reserve) => {
             return (
                 parseInt(
-                    reserve.check_in_date.toString().split("/")[2] +
-                    reserve.check_in_date.toString().split("/")[1] +
-                    reserve.check_in_date.toString().split("/")[0]) >= dateToInt(startDate)
+                    reserve.check_in_date.toString().split("-")[2] +
+                    reserve.check_in_date.toString().split("-")[1] +
+                    reserve.check_in_date.toString().split("-")[0]) >= dateToInt(startDate)
             )
         })
     if (endDate !== "" && endDate !== null)
         filterData = filterData.filter((reserve) => {
             return (
                 parseInt(
-                    reserve.check_out_date.toString().split("/")[2] +
-                    reserve.check_out_date.toString().split("/")[1] +
-                    reserve.check_out_date.toString().split("/")[0]) <= dateToInt(endDate)
+                    reserve.check_out_date.toString().split("-")[2] +
+                    reserve.check_out_date.toString().split("-")[1] +
+                    reserve.check_out_date.toString().split("-")[0]) <= dateToInt(endDate)
             )
     })    
     return filterData      

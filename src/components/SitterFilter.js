@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext} from 'react'
-import { Navbar, Button, Form, Col} from 'react-bootstrap'
+import {Nav, Navbar, Button, Form, Col} from 'react-bootstrap'
+import Background from '../bg/rectangle1486.jpg'
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,7 +13,7 @@ import {Get} from "../server"
 
 export const SitterFilterContext = createContext();
 
-const SitterFilter = () => {
+const SitterFilter = (props) => {
     const [ status, setStatus ] = useState("All status")
     const [ reserveID, setReserveID ] = useState("")
     const [ owner, setOwner ] = useState("")
@@ -20,16 +21,24 @@ const SitterFilter = () => {
     const [ endDate, setEndDate ] = useState("");
     const [ data, setData ] = useState([]);
 
+    const fetchData = async () => {
+        const result = await Get("api/search-reservations/?id=" + props.user_id)
+        result.reservations.sort((a, b)=> 
+            a.reservation_id - b.reservation_id
+        )
+        result.reservations.map((reserve)=>{
+            return reserve.status = getStatus(reserve.reservation_status) 
+        })
+        setData(result.reservations)
+    }
+
     useEffect(()=> {
-        const fetchData = async () => {
-            const result = await Get("api/search-reservations")
-            result.reservations.map((reserve)=>{
-                return reserve.status = getStatus(reserve.reservation_status) 
-            })
-            setData(result.reservations)
-        }
         fetchData()
     }, [])
+
+    const reRender = () => {
+        fetchData()
+    }
 
     const SearchKeyword = () => {
         if (startDate === null) setStartDate("")
@@ -101,11 +110,26 @@ const SitterFilter = () => {
                         </tr>
                     </tbody>
                 </table>
-                <Button onClick={clearData} type="reset" variant="light" size="sm" style={{ padding: "0px", color: "#2699FB", borderRadius: "50px", marginLeft: "20px", width: "100px", height: "20px" }}>
+                <Button onClick={clearData} type="reset" variant="light" style={
+                    {backgroundImage: `url(${Background})`,
+                    fontWeight: "bold",
+                    color: "#1560bd",
+                    borderRadius: "10px"}}>
                     Clear fields
                 </Button>
+                <Nav>
+                <Nav.Link href="/login">
+                <Button variant="light" style={
+                    {backgroundImage: `url(${Background})`,
+                    fontWeight: "bold",
+                    color: "#1560bd",
+                    borderRadius: "10px"}}>
+                    Logout
+                </Button>
+                </Nav.Link>
+            </Nav>
             </Navbar>
-            <ReservationList reserveList={SearchKeyword()}/>
+            <ReservationList reserveList={SearchKeyword()} reRender={reRender}/>
         </div>
     )
 }
